@@ -1,7 +1,7 @@
 # CURRY Reader For Python
 This is an open-source tool which allows to load CURRY data to Python.
 
-# Installation and Dependencies	
+# Installation And Dependencies	
 This package depends on numpy. If you are new to Python and don't already have numpy, please see https://numpy.org/install/
 We recommend using the Miniconda (https://docs.conda.io/en/latest/miniconda.html) distribution of Python.
 
