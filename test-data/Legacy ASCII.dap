@@ -1,0 +1,85 @@
+﻿DATA_PARAMETERS START
+   DataFormat           = ASCII
+   DataGuid             = {9A096BCB-0F56-4E79-9995-2E3B07019F2D}
+   DataExtension        = dat
+   CurrentSessionLabel  = 
+   DataByteOrder        = ASCII
+   DataSampOrder        = SAMP
+   AmplifierInfo        = 
+   Comments             = 
+   FileHistory          = 1 file:¶	D:\Personal\Tests\CURRY 9 Demo\Viscpt\Viscpt.cnt  4514 kB 68630 samples 9/3/2015 5:55:03 PM¶¶1 EEG group,1 other group, 32 channels¶68630 samples, 250.0 Hz sampling rate¶duration: 00:04:34.5, start latency / trigger offset: 0.0 ms¶¶207 events, 3 event types¶¶EEG group 1: 31 channels, reference: <None>¶
+   NumSessions          =  1
+   CurrentSession       =  0
+   FrequencyDomain      =  0
+   NumSamples           =  68630
+   NumTrials            =  1
+   NumChannels          =  32
+   NumGroups            =  2
+   NumMagGroups         =  0
+   NumElGroups          =  1
+   IntOffset            =  0
+   NumLinesSkip         =  0
+   NumColumnsSkip       =  0
+   DecimalSymbol        =  0
+   DigLengthUnit        = -1
+   DigColX              =  1
+   DigColY              =  2
+   DigColZ              =  3
+   DigColLabel          =  4
+   DigDirX              = -1
+   DigDirY              = -1
+   DigDirZ              = -1
+   StartYear            =  0
+   StartMonth           =  0
+   StartDay             =  0
+   StartHour            = -1
+   StartMin             =  0
+   StartSec             =  0
+   StartMillisec        =  0
+   StartOffsetUTCMin    =  0
+   SampleTimeUsec       =  4000
+   SampleFreqHz         =  250
+   TriggerOffsetUsec    =  0
+   TriggerOffsetHz      =  0
+   StimIntervalUsec     =  0
+DATA_PARAMETERS END
+
+DEVICE_PARAMETERS START
+   DataUnit             = uV
+   NumChanThisGroup     =  31
+   NumSensorsThisGroup  =  31
+   CommonOffset         =  0
+   NumRefChannels       =  0
+   CommonScale          =  1
+DEVICE_PARAMETERS END
+
+DEVICE_PARAMETERS_OTHERS START
+   DataUnit             = uV
+   NumChanThisGroup     =  1
+   NumSensorsThisGroup  =  1
+   CommonOffset         =  0
+   NumRefChannels       =  0
+   CommonScale          =  1
+DEVICE_PARAMETERS_OTHERS END
+
+TRIGGER_FLAGS_OTHERS START
+   ListDescription      = Trigger
+   ListUnits            = 
+   ListNrColumns        =  1
+   ListNrRows           =  1
+   ListNrTimepts        =  1
+   ListNrBlocks         =  1
+   ListBinary           =  0
+   ListType             =  0
+   ListTrafoType        =  0
+   ListGridType         =  2
+   ListFirstColumn      =  1
+   ListIndexMin         = -1
+   ListIndexMax         = -1
+   ListIndexAbsMax      = -1
+TRIGGER_FLAGS_OTHERS END
+
+TRIGGER_FLAGS_OTHERS START_LIST	# Do not edit!
+  0
+TRIGGER_FLAGS_OTHERS END_LIST
+
