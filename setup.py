@@ -9,7 +9,7 @@ setuptools.setup(
     long_description=open('README.txt').read(),
     long_description_content_type="text/markdown",
     url = "https://compumedicsneuroscan.com/products/by-name/curry/",
-    download_url="https://github.com/curry-tools/curryreader",
+    download_url="https://github.com/neuroscan/curry-python-reader",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
