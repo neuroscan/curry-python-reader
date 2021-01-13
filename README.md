@@ -33,7 +33,7 @@ pip install -r requirements.txt --user
 # Usage
     import curryreader as cr
     
-    # Get all outputs separately
+    # Get all outputs separately:
     (data, datainfo, labels, events, annotations, sensorpos, impedancematrix, hpimatrix) = cr.read()
   
     # Or get all outputs in tuple "data":
