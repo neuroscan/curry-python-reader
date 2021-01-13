@@ -1,5 +1,5 @@
 # CURRY Reader For Python
-This is an open-source tool which allows to load CURRY data to Python.
+This is an open-source tool which allows to load CURRY data into Python. It supports: raw float (.cdt), ascii (.cdt), legacy raw float (.dat) and legacy ascii (.dat).
 
 # Installation And Dependencies	
 This package depends on numpy. If you are new to Python and don't already have numpy, please see https://numpy.org/install/
@@ -22,7 +22,7 @@ pip install -r requirements.txt --user
 
 # Outputs
     data            functional data (e.g. EEG, MEG)
-    datainfo        data information: [Samples, Channels, Trials/Epochs, Sampling frequency]
+    datainfo        data information: [samples, channels, trials/epochs, sampling frequency]
     labels          channel labels
     events          events matrix where every row is: [event latency, event type, event start, event stop]
     annontations    corresponding annotations to each event
@@ -31,16 +31,16 @@ pip install -r requirements.txt --user
     hpimatrix       HPI-coil measurements matrix (Orion-MEG only) where every row is: [measurementsample, dipolefitflag, x, y, z, deviation]
     
 # Usage
-	  import curryreader as cr
+    import curryreader as cr
     
     # Get all outputs separately
-	  (data, datainfo, labels, events, annotations, sensorpos, impedancematrix, hpimatrix) = cr.read()
-	  
+    (data, datainfo, labels, events, annotations, sensorpos, impedancematrix, hpimatrix) = cr.read()
+  
     # Or get all outputs in tuple "data":
-	  data = cr.read()
-	  
+    data = cr.read()
+  
     # Or get only first x outputs:
-	  data, datainfo, labels, *_ = cr.read()    
+    data, datainfo, labels, *_ = cr.read()    
 
 # Licensing
 BSD (3-clause)
