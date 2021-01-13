@@ -36,7 +36,7 @@ pip install -r requirements.txt --user
     # Use file selection box, get all outputs separately :
     (data, datainfo, labels, events, annotations, sensorpos, impedancematrix, hpimatrix) = cr.read()
   
-    # Specify file path, get all outputs in tuple "data", avoid plot, set minimum verbosity:
+    # Specify file path, avoid plot, set minimum verbosity, get all outputs in tuple "data":
     data = cr.read("test.cdt", 0, 1)
   
     # Get only first x outputs:
