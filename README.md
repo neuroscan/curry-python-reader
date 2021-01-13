@@ -33,14 +33,14 @@ pip install -r requirements.txt --user
 # Usage
     import curryreader as cr
     
-    # Get all outputs separately:
+    # Use file selection box, get all outputs separately :
     (data, datainfo, labels, events, annotations, sensorpos, impedancematrix, hpimatrix) = cr.read()
   
-    # Or get all outputs in tuple "data":
-    data = cr.read()
+    # Specify file path, get all outputs in tuple "data", avoid plot, set minimum verbosity:
+    data = cr.read("test.cdt", 0, 1)
   
-    # Or get only first x outputs:
-    data, datainfo, labels, *_ = cr.read()    
+    # Get only first x outputs:
+    data, datainfo, labels, *_ = cr.read("test.cdt")
 
 # Licensing
 BSD (3-clause)
