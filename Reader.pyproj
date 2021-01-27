@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>f53299d0-bd1a-45de-98e4-046b4f75a381</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>create_ref_results.py</StartupFile>
+    <StartupFile>example.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -29,6 +29,9 @@
     <Compile Include="create_ref_results.py" />
     <Compile Include="curryreader.py" />
     <Compile Include="curryreader_test.py" />
+    <Compile Include="example.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="setup.py" />
   </ItemGroup>
   <ItemGroup>
