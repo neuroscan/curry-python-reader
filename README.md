@@ -3,6 +3,7 @@ This is an open-source tool which allows to load CURRY data into Python. It supp
 
 # Installation And Dependencies	
 This package depends on numpy. If you are new to Python and don't already have numpy, please see https://numpy.org/install/
+
 We recommend using the Miniconda (https://docs.conda.io/en/latest/miniconda.html) distribution of Python.
 
 The complete list of dependencies is contained in the file requirements.txt
@@ -21,7 +22,7 @@ pip install -r requirements.txt --user
     verbosity:      1 is low, 2 is medium (default) and 3 is high
 
 # Outputs
-    data            functional data (e.g. EEG, MEG)
+    data            functional data (e.g. EEG, MEG) with dimensions (samples, channels)
     datainfo        data information: [samples, channels, trials/epochs, sampling frequency]
     labels          channel labels
     events          events matrix where every row is: [event latency, event type, event start, event stop]
