@@ -2,6 +2,7 @@ import curryreader as cr
 import numpy as np
 import pytest
 from numpy.testing import assert_allclose
+from create_ref_results import compose_output
 
 plot = 0
 tol = 1e-4
@@ -31,11 +32,7 @@ def test_raw_float_cdt():
     
     data = cr.read(raw_float_cdt, plot)
     
-    params_output = ''
-    
-    for t in data[1:]:
-        line = ' '.join(str(x) for x in t)
-        params_output += (line + '\n')
+    params_output = compose_output(data[1:])
   
     ref_params = open(ref_params_continuos).read()
     ref_data = np.load(ref_data_continuos)
@@ -55,11 +52,7 @@ def test_legacy_raw_float_dat():
     
     data = cr.read(legacy_raw_float_dat, plot)
     
-    params_output = ''
-    
-    for t in data[1:]:
-        line = ' '.join(str(x) for x in t)
-        params_output += (line + '\n')
+    params_output = compose_output(data[1:])
   
     ref_params = open(ref_params_epochs).read()
     ref_data = np.load(ref_data_epochs)
@@ -72,11 +65,7 @@ def test_ascii_dat():
     
     data = cr.read(ascii_dat, plot)
     
-    params_output = ''
-    
-    for t in data[1:]:
-        line = ' '.join(str(x) for x in t)
-        params_output += (line + '\n')
+    params_output = compose_output(data[1:])
   
     ref_params = open(ref_params_epochs).read()
     ref_data = np.load(ref_data_epochs)
@@ -90,11 +79,7 @@ def test_hpi():
     
     data = cr.read(hpi_cdt, plot)
     
-    params_output = ''
-    
-    for t in data[1:]:
-        line = ' '.join(str(x) for x in t)
-        params_output += (line + '\n')
+    params_output = compose_output(data[1:])
   
     ref_params = open(ref_params_hpi).read()
     ref_data = np.load(ref_data_hpi)
