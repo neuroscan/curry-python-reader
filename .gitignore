@@ -129,3 +129,6 @@ dmypy.json
 .pyre/
 /.vs
 /lastdir.txt
+/TestResults/junitresults_35e76a91-cda5-4e48-9586-0082a53b2eb1.xml
+/Reader.pyproj.user
+*.xml

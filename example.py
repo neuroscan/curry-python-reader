@@ -8,4 +8,4 @@ import curryreader as cr
 
 # 3) Get only first x outputs:
 data, datainfo, labels, *_ = cr.read("test_data\\Float.cdt")
-print("Info (samples, channels, trials/epochs, sampling frequency):\n", datainfo) 
+print("Data info:\n", datainfo) 
