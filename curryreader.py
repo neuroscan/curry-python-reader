@@ -22,8 +22,8 @@ def read(inputfilename='', plotdata = 1, verbosity = 2):
     verbosity:      1 is low, 2 is medium (default) and 3 is high
     
     Outputs:
-    data            functional data (e.g. EEG, MEG)
-    datainfo        data information: [Samples, Channels, Trials/Epochs, Sampling frequency]
+    data            functional data (e.g. EEG, MEG) with dimensions (samples, channels)
+    datainfo        data information: [samples, channels, trials/epochs, sampling frequency]
     labels          channel labels
     events          events matrix where every row corresponds to: [event latency, event type, event start, event stop]
     annontations    corresponding annotations to each event
@@ -61,7 +61,7 @@ def read(inputfilename='', plotdata = 1, verbosity = 2):
             
             # handle cancel
             if not filepath:
-                return
+                raise Exception
         except:
             raise Exception("Unable to open file")
     else:
@@ -166,7 +166,7 @@ def read(inputfilename='', plotdata = 1, verbosity = 2):
     nMultiplex  = int(a[6]  + a[int(6 + nt / 2)])
     fSampleTime =     a[7]  + a[int(7 + nt / 2)]
 
-    datainfo = [nSamples, nChannels, nTrials, fFrequency]
+    datainfo = { "samples" : nSamples, "channels" : nChannels, "trials" : nTrials, "sampling_freq" : fFrequency }
     log.info('Number of samples = %s, number of channels = %s, number of trials/epochs = %s, sampling frequency = %s Hz', str(nSamples), str( nChannels), str(nTrials), str(fFrequency))
                     
     if fFrequency == 0 or fSampleTime != 0:
