@@ -139,7 +139,7 @@ def read(inputfilename='', plotdata = 1, verbosity = 2):
     
     # read parameters from parameter file
     # tokens (second line is for Curry 6 notation)
-    tok = ['NumSamples', 'NumChannels', 'NumTrials', 'SampleFreqHz',  'TriggerOffsetUsec',  'DataFormat', 'DataSampOrder',   'SampleTimeUsec',# 'NumMagGroups', 'NumElGroups',
+    tok = ['NumSamples', 'NumChannels', 'NumTrials', 'SampleFreqHz',  'TriggerOffsetUsec',  'DataFormat', 'DataSampOrder',   'SampleTimeUsec',
             'NUM_SAMPLES','NUM_CHANNELS','NUM_TRIALS','SAMPLE_FREQ_HZ','TRIGGER_OFFSET_USEC','DATA_FORMAT','DATA_SAMP_ORDER', 'SAMPLE_TIME_USEC']
     
     # scan keywords - all keywords must exist!
