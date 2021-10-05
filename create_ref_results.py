@@ -5,21 +5,23 @@ import numpy as np
 def compose_output(data):
     
     output = ''
-    for count, t in enumerate(data):
-        line = ' '.join(str(t[x]) for x in t) if count == 0 else ' '.join(str(x) for x in t)
+    for key, item in data.items():
+        output += (key + ': ')
+        line = ' '.join(str(item[x]) for x in item) if isinstance(item, dict) else ' '.join(str(x) for x in item)
         output += (line + '\n')
 
     return output
 
 def create_reference_output(test_file, ref_output_case):
     
-    data = cr.read(test_folder + test_file, 0)
+    currydata = cr.read(test_folder + test_file, 0)
 
     f = open(test_ref_folder + 'ref_params_' + ref_output_case + '.txt', 'w')
 
-    np.save(test_ref_folder + 'ref_data_' + ref_output_case, data[0])
+    np.save(test_ref_folder + 'ref_data_' + ref_output_case, currydata['data'])
     
-    output = compose_output(data[1:])
+    currydata.pop('data')
+    output = compose_output(currydata)
     
     f.write(output)
     f.close()

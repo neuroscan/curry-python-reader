@@ -30,63 +30,62 @@ ref_params_hpi          =  test_ref_folder + "ref_params_hpi.txt"
 # data-info, labels, events, annotations, sensor locations and impedance check
 def test_raw_float_cdt():
     
-    data = cr.read(raw_float_cdt, plot)
-    
-    params_output = compose_output(data[1:])
-  
-    ref_params = open(ref_params_continuos).read()
+    currydata = cr.read(raw_float_cdt, plot)
     ref_data = np.load(ref_data_continuos)
+    assert_allclose(currydata['data'], ref_data)
     
+    currydata.pop('data')
+    params_output = compose_output(currydata)
+    ref_params = open(ref_params_continuos).read()
     assert(params_output == ref_params)
-    assert_allclose(data[0], ref_data)
+    
 
 # Tests ascii-cdt format with continuos data
 def test_ascii_cdt():
     
-    data = cr.read(ascii_cdt, plot)   
+    currydata = cr.read(ascii_cdt, plot)   
     ref_data = np.load(ref_data_continuos)
-    assert_allclose(data[0], ref_data, rtol = tol)
+    assert_allclose(currydata['data'], ref_data, rtol = tol)
 
 # Tests raw-float-dat format with epochs, data-info, labels, sensor locations
 def test_legacy_raw_float_dat():
     
-    data = cr.read(legacy_raw_float_dat, plot)
-    
-    params_output = compose_output(data[1:])
-  
-    ref_params = open(ref_params_epochs).read()
+    currydata = cr.read(legacy_raw_float_dat, plot)
     ref_data = np.load(ref_data_epochs)
+    assert_allclose(currydata['data'], ref_data)
     
+    currydata.pop('data')
+    params_output = compose_output(currydata)
+    ref_params = open(ref_params_epochs).read()  
     assert(params_output == ref_params)
-    assert_allclose(data[0], ref_data)
+    
 
 # Tests ascii-dat-format with epochs, data-info, labels, sensor locations 
 def test_ascii_dat():
     
-    data = cr.read(ascii_dat, plot)
-    
-    params_output = compose_output(data[1:])
-  
-    ref_params = open(ref_params_epochs).read()
+    currydata = cr.read(ascii_dat, plot)
     ref_data = np.load(ref_data_epochs)
+    assert_allclose(currydata['data'], ref_data)
     
+    currydata.pop('data')
+    params_output = compose_output(currydata)
+    ref_params = open(ref_params_epochs).read()
     assert(params_output == ref_params)
-    assert_allclose(data[0], ref_data)
+    
 
 # Tests raw-float-cdt format with continuos data, data-info, labels, 
 # events, annotations, sensor locations and HPI matrix
 def test_hpi():
     
-    data = cr.read(hpi_cdt, plot)
-    
-    params_output = compose_output(data[1:])
-  
-    ref_params = open(ref_params_hpi).read()
+    currydata = cr.read(hpi_cdt, plot)   
     ref_data = np.load(ref_data_hpi)
+    assert_allclose(currydata['data'], ref_data)
     
+    currydata.pop('data')
+    params_output = compose_output(currydata)
+    ref_params = open(ref_params_hpi).read()  
     assert(params_output == ref_params)
-    assert_allclose(data[0], ref_data)
-
+    
 # Test compressed format
 def test_compressed():
 
