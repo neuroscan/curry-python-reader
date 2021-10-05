@@ -10,25 +10,27 @@ def read(inputfilename='', plotdata = 1, verbosity = 2):
     """Curry Reader Help
 
     Usage:
-    (data, datainfo, labels, events, annotations, sensorpos, impedancematrix, hpimatrix) = read(inputfilename = '', plotdata = 1, verbosity = 2)
+    currydata = read(inputfilename = '', plotdata = 1, verbosity = 2)
     
     Inputs:
-    inputfilename:  if left empty, reader will prompt user with file selection box, otherwise specify filename with path;
-                    supported files are: raw float (cdt), ascii (cdt), legacy raw float (dat) and legacy ascii (dat)
-    plotdata:       plotdata = 0, don't show plot
-                    plotdata = 1, show plot (default)  
-                    plotdata = x, with x > 1, shows and automatically closes plot after x seconds
-    verbosity:      1 is low, 2 is medium (default) and 3 is high
+    inputfilename:      if left empty, reader will prompt user with file selection box, otherwise specify filename with path;
+                        supported files are: raw float (cdt), ascii (cdt), legacy raw float (dat) and legacy ascii (dat)
+    plotdata:           plotdata = 0, don't show plot
+                        plotdata = 1, show plot (default)  
+                        plotdata = x, with x > 1, shows and automatically closes plot after x seconds
+    verbosity:          1 is low, 2 is medium (default) and 3 is high
     
-    Outputs:
-    data            functional data (e.g. EEG, MEG) with dimensions (samples, channels)
-    datainfo        data information: [samples, channels, trials/epochs, sampling frequency]
-    labels          channel labels
-    events          events matrix where every row corresponds to: [event latency, event type, event start, event stop]
-    annontations    corresponding annotations to each event
-    sensorpos       channel locations [x,y,z]
-    impedancematrix impedance matrix with max size = (channels, 10), corresponding to last ten impedance measurements
-    hpimatrix       HPI-coil measurements matrix (Orion-MEG only) where every row is: [measurementsample, dipolefitflag, x, y, z, deviation] 
+    Output as dictionary with keys:
+    'data'              functional data matrix (e.g. EEG, MEG) with dimensions (samples, channels)
+    'datainfo'          data information with keys: {'samples', 'channels', 'trials', 'samplingfreq'}
+    'labels'            channel labels list
+    'sensorpos'         channel locations matrix [x,y,z]
+    'events'            events matrix where every row corresponds to: [event latency, event type, event start, event stop]
+    'annontations'      events annotation list
+    'epochinfo'         epochs matrix where every row corresponds to: [number of averages, total epochs, type, accept, correct, response, response time]
+    'epochlabels'       epoch labels list
+    'impedancematrix'   impedance matrix with max size (channels, 10), corresponding to last ten impedance measurements
+    'hpimatrix'         HPI-coil measurements matrix (Orion-MEG only) where every row is: [measurementsample, dipolefitflag, x, y, z, deviation] 
 
     2020 - Compumedics Neuroscan
     """
@@ -165,7 +167,7 @@ def read(inputfilename='', plotdata = 1, verbosity = 2):
     nMultiplex  = int(a[6]  + a[int(6 + nt / 2)])
     fSampleTime =     a[7]  + a[int(7 + nt / 2)]
 
-    datainfo = { "samples" : nSamples, "channels" : nChannels, "trials" : nTrials, "sampling_freq" : fFrequency }
+    datainfo = { "samples" : nSamples, "channels" : nChannels, "trials" : nTrials, "samplingfreq" : fFrequency }
     log.info('Number of samples = %s, number of channels = %s, number of trials/epochs = %s, sampling frequency = %s Hz', str(nSamples), str( nChannels), str(nTrials), str(fFrequency))
                     
     if fFrequency == 0 or fSampleTime != 0:
@@ -464,12 +466,12 @@ def read(inputfilename='', plotdata = 1, verbosity = 2):
     # assamble output dict
     output = {'data'        : data, 
               'info'        : datainfo, 
-              'labels'      : labels, 
+              'labels'      : labels,
+              'sensorpos'   : sensorpos, 
               'events'      : events,
+              'annotations' : annotations,
               'epochinfo'   : epochinformation,
               'epochlabels' : epochlabelslist,
-              'annotations' : annotations, 
-              'sensorpos'   : sensorpos, 
               'impedances'  : impedancematrix, 
               'hpimatrix'   : hpimatrix}
 
