@@ -2,7 +2,6 @@ import os
 import sys
 import logging as log
 import numpy as np
-import numpy.matlib
 import tkinter as tk
 from tkinter import filedialog
 import matplotlib.pyplot as plt
@@ -138,7 +137,7 @@ def read(inputfilename='', plotdata = 1, verbosity = 2):
     
     # read parameters from parameter file
     # tokens (second line is for Curry 6 notation)
-    tok = ['NumSamples', 'NumChannels', 'NumTrials', 'SampleFreqHz',  'TriggerOffsetUsec',  'DataFormat', 'DataSampOrder',   'SampleTimeUsec',
+    tok = ['NumSamples', 'NumChannels', 'NumTrials', 'SampleFreqHz',  'TriggerOffsetUsec',  'DataFormat', 'DataSampOrder',   'SampleTimeUsec',# 'NumMagGroups', 'NumElGroups',
             'NUM_SAMPLES','NUM_CHANNELS','NUM_TRIALS','SAMPLE_FREQ_HZ','TRIGGER_OFFSET_USEC','DATA_FORMAT','DATA_SAMP_ORDER', 'SAMPLE_TIME_USEC']
     
     # scan keywords - all keywords must exist!
@@ -246,8 +245,7 @@ def read(inputfilename='', plotdata = 1, verbosity = 2):
    
     ##########################################################################
     # read sensor locations from label file
-    # initialize sensor locations
-    sensorpos = np.zeros((nChannels, 3))
+    sensorpos = []
     
     ctok = '\nSENSORS'
     ix = []
@@ -264,48 +262,75 @@ def read(inputfilename='', plotdata = 1, verbosity = 2):
     nc = 0
     
     if ix:
-        for i in range(3,len(ix),4):                    # loop over channel groups
+        grouppospersensor = []
+        maxpersensor = 0
+        for i in range(3,len(ix),4):                    # first pass over groups to determine sensorpos size
+            text = contents[ix[i - 1] : ix[i]]
+            text = text[text.find('\n', 1):].splitlines()
+            pospersensor = len(text[1].split())
+            maxpersensor = max (pospersensor, maxpersensor)
+            grouppospersensor.append(pospersensor)
+
+        assert(maxpersensor == 3 or maxpersensor == 6)                    # 3 is one position per sensor (EEG or MEG) 
+        positions = np.zeros([nChannels, maxpersensor])                   # 6 is two positions per sensor (MEG) 
+
+        for group, i in enumerate(range(3,len(ix),4)):                    # loop over channel groups
             text = contents[ix[i - 1] : ix[i]]
             text = text[text.find('\n', 1):].split()
             last = nChannels - nc
-            numChannels = min(last, int(len(text) / 3))
-            for j in range(numChannels):
-                sensorpos[nc][0] = float(text[j * 3])
-                sensorpos[nc][1] = float(text[j * 3 + 1])
-                sensorpos[nc][2] = float(text[j * 3 + 2])
+            pospersensor = grouppospersensor[group]
+            numchannels = min(last, int(len(text) / pospersensor))
+            for j in range(numchannels):
+                for k in range(pospersensor):
+                    positions[nc][k] = float(text[j * pospersensor + k])
                 nc += 1
+
+        sensorpos = positions
+        log.info('Found sensor positions')
     else:
         log.warning('No sensor positions were found')
-
+    
+    
+    #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     # search for Epoch Labels
-    tixstart = contents.find('EPOCH_LABELS START_LIST')
-    tixstart = contents.find('\n',tixstart)
-    tixstop = contents.find('EPOCH_LABELS END_LIST')
-    
     epochlabelslist = []
+
+    if extension == 'dat':
+        try:
+            fid = open(parameterfile,'r')
+            contents = fid.read()
+            fid.close()
+        except:
+            log.warning('Found no parameter file')
+
+    ctok = '\nEPOCH_LABELS'
+    if ctok in contents:
+        tixstart = contents.find('EPOCH_LABELS START_LIST')
+        tixstart = contents.find('\n',tixstart)
+        tixstop = contents.find('EPOCH_LABELS END_LIST')
     
-    if tixstart != -1 and tixstop != 1 :
-        epochlabelslist = contents[tixstart:tixstop - 1].split()
+        if tixstart != -1 and tixstop != 1 :
+            epochlabelslist = contents[tixstart:tixstop - 1].split()
     
     if epochlabelslist:
         log.info('Found epoch labels')
-
+    
+    #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     # search for Epoch Information
     tixstart = contents.find('EPOCH_INFORMATION START_LIST')
     tixstart = contents.find('\n',tixstart)
     tixstop = contents.find('EPOCH_INFORMATION END_LIST')
     infoelements = 7
-    
+    epochinformation = []
+
     if tixstart != -1 and tixstop != 1 :
         epochinformation = np.zeros((len(epochlabelslist), infoelements))
         text = contents[tixstart:tixstop - 1].split()
         for i in range(0, len(text), infoelements):
             for j in range(infoelements):
                 epochinformation[int(i / infoelements)][j] = int(text[i + j])
-    else:
-        epochinformation = []
-
-    if epochinformation:
+ 
+    if epochinformation.any():
         log.info('Found epoch information')
    
     #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -419,7 +444,7 @@ def read(inputfilename='', plotdata = 1, verbosity = 2):
         # stacked plot
         amprange = max(abs(data.min()), abs(data.max()))
         shift = np.linspace((nChannels - 1) * amprange * 0.3, 0, nChannels,  dtype=np.float32)
-        data += np.matlib.repmat(shift, nSamples * nTrials, 1)
+        data += np.tile(shift, (nSamples * nTrials, 1))
         fig, ax = plt.subplots()
         ax.plot(time, data)
         ax.set_yticks(shift)
@@ -435,5 +460,17 @@ def read(inputfilename='', plotdata = 1, verbosity = 2):
             plt.close()
         else:
             log.warning("Invalid plotdata input: please see description in help")
-        
-    return data, datainfo, labels, events, annotations, sensorpos, impedancematrix, hpimatrix
+       
+    # assamble output dict
+    output = {'data'        : data, 
+              'info'        : datainfo, 
+              'labels'      : labels, 
+              'events'      : events,
+              'epochinfo'   : epochinformation,
+              'epochlabels' : epochlabelslist,
+              'annotations' : annotations, 
+              'sensorpos'   : sensorpos, 
+              'impedances'  : impedancematrix, 
+              'hpimatrix'   : hpimatrix}
+
+    return output
