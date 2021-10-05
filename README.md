@@ -21,7 +21,7 @@ pip install -r requirements.txt --user
                         plotdata = x, with x > 1, shows and automatically closes plot after x seconds
     verbosity:          1 is low, 2 is medium (default) and 3 is high
 
-# Output as dictionary with keys
+# Output As Dictionary With Keys
     'data'              functional data matrix (e.g. EEG, MEG) with dimensions (samples, channels)
     'datainfo'          data information with keys: {'samples', 'channels', 'trials/epochs', 'sampling', 'frequency'}
     'labels'            channel labels
