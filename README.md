@@ -23,7 +23,7 @@ pip install -r requirements.txt --user
 
 # Output As Dictionary With Keys
     'data'              functional data matrix (e.g. EEG, MEG) with dimensions (samples, channels)
-    'datainfo'          data information with keys: {'samples', 'channels', 'trials/epochs', 'sampling', 'frequency'}
+    'info'          	data information with keys: {'samples', 'channels', 'trials/epochs', 'sampling', 'frequency'}
     'labels'            channel labels
     'sensorpos'         channel locations [x,y,z]
     'events'            events matrix where every row corresponds to: [event latency, event type, event start, event stop]
@@ -31,6 +31,8 @@ pip install -r requirements.txt --user
     'epochinfo'         epochs matrix where every row corresponds to: [number of averages, total epochs, type, accept, correct, response, response time]
     'epochlabels'       epoch labels
     'impedancematrix'   impedance matrix with max size (channels, 10), corresponding to last ten impedance measurements
+    'landmarks'         functional, HPI or headshape landmarks locations
+    'landmarkslabels'   labels for functional (e.g. LPA, Nasion,...), HPI (e.g. HPI 1, HPI 2,...) or headshape (e.g. H1, H2,...) landmarks 
     'hpimatrix'         HPI-coil measurements matrix (Orion-MEG only) where every row is: [measurementsample, dipolefitflag, x, y, z, deviation] 
    
 # Usage Examples
