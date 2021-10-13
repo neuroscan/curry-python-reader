@@ -22,7 +22,7 @@ def read(inputfilename='', plotdata = 1, verbosity = 2):
     
     Output as dictionary with keys:
     'data'              functional data matrix (e.g. EEG, MEG) with dimensions (samples, channels)
-    'datainfo'          data information with keys: {'samples', 'channels', 'trials', 'samplingfreq'}
+    'info'              data information with keys: {'samples', 'channels', 'trials', 'samplingfreq'}
     'labels'            channel labels list
     'sensorpos'         channel locations matrix [x,y,z]
     'events'            events matrix where every row corresponds to: [event latency, event type, event start, event stop]
