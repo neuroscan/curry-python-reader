@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>f53299d0-bd1a-45de-98e4-046b4f75a381</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>example.py</StartupFile>
+    <StartupFile>create_ref_results.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>

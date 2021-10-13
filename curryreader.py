@@ -26,13 +26,15 @@ def read(inputfilename='', plotdata = 1, verbosity = 2):
     'labels'            channel labels list
     'sensorpos'         channel locations matrix [x,y,z]
     'events'            events matrix where every row corresponds to: [event latency, event type, event start, event stop]
-    'annontations'      events annotation list
+    'annotations'       events annotation list
     'epochinfo'         epochs matrix where every row corresponds to: [number of averages, total epochs, type, accept, correct, response, response time]
     'epochlabels'       epoch labels list
     'impedancematrix'   impedance matrix with max size (channels, 10), corresponding to last ten impedance measurements
+    'landmarks'         functional, HPI or headshape landmarks locations
+    'landmarkslabels'   labels for functional (e.g. LPA, Nasion,...), HPI (e.g. HPI 1, HPI 2,...) or headshape (e.g. H1, H2,...) landmarks 
     'hpimatrix'         HPI-coil measurements matrix (Orion-MEG only) where every row is: [measurementsample, dipolefitflag, x, y, z, deviation] 
 
-    2020 - Compumedics Neuroscan
+    2021 - Compumedics Neuroscan
     """
     # configure verbosity logging    
     verbositylevel = lambda verbosity : log.WARNING if verbosity == 1 else (log.INFO if verbosity == 2 else (log.DEBUG if verbosity == 3 else log.INFO))
@@ -182,6 +184,7 @@ def read(inputfilename='', plotdata = 1, verbosity = 2):
             fileSize = os.path.getsize(filepath)
             nSamples = fileSize / (4 * nChannels * nTrials)
     
+    #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
     # search for Impedance Values
     tixstart = contents.find('IMPEDANCE_VALUES START_LIST')
     tixstart = contents.find('\n',tixstart)
@@ -218,18 +221,8 @@ def read(inputfilename='', plotdata = 1, verbosity = 2):
     for i in range(nChannels):
         labels[i] = 'EEG' + str(i + 1)
     
-    ctok = '\nLABELS'
-    ix = []
-    index = 0
-    
     # scan for LABELS (occurs four times per channel group)
-    while index < len(contents):
-            index = contents.find(ctok, index)
-            if index == -1:
-                break
-            ix.append(index)
-            index += len(ctok)
-    
+    ix = findtokens('\nLABELS', contents)  
     nc = 0
     
     if ix:
@@ -245,56 +238,91 @@ def read(inputfilename='', plotdata = 1, verbosity = 2):
     else:
         log.warning('Using dummy labels (EEG1, EEG2, ...)')
    
+    #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+    # search for landmarks
+    landmarks = []
+    landmarkslabels = []    
+
+    # scan for SENSORS (occurs four times per channel group)
+    ix = findtokens('\nLANDMARKS', contents)   
+    nc = 0
+    totallandmarks = 0
+
+    if ix:
+        for i in range(3,len(ix),4):                    # first pass over groups to find total of landmarks
+            text = contents[ix[i - 1] : ix[i]]
+            text = text[text.find('\n', 1):].splitlines()[1:]
+            totallandmarks += len(text)
+
+        lmpositions = np.zeros([totallandmarks, 3])                  
+        for i in range(3,len(ix),4):                    # loop over channel groups
+            text = contents[ix[i - 1] : ix[i]]
+            text = text[text.find('\n', 1):].split()
+            last = totallandmarks - nc
+            numlandmarks = min(last, int(len(text) / 3))
+            for j in range(0, numlandmarks * 3, 3):
+                lmpositions[nc][:] = np.array(text[j : j + 3])
+                nc += 1
+
+        landmarks = lmpositions
+        log.info('Found landmarks')
+    
+    # landmark labels
+    ix = findtokens('\nLM_REMARKS', contents)   
+    landmarkslabels = [''] * totallandmarks
+    start = 0
+    
+    if ix and totallandmarks:               
+        for i in range(3,len(ix),4):                    # loop over channel groups
+            text = contents[ix[i - 1] : ix[i]]
+            text = text[text.find('\n', 1):].splitlines()[1:]
+            landmarkslabels[start:len(text)] = text
+            start += len(text)
+
     ##########################################################################
     # read sensor locations from label file
     sensorpos = []
     
-    ctok = '\nSENSORS'
-    ix = []
-    index = 0
-    
     # scan for SENSORS (occurs four times per channel group)
-    while index < len(contents):
-            index = contents.find(ctok, index)
-            if index == -1:
-                break
-            ix.append(index)
-            index += len(ctok)
-    
+    ix = findtokens('\nSENSORS', contents) 
     nc = 0
     
     if ix:
         grouppospersensor = []
         maxpersensor = 0
-        for i in range(3,len(ix),4):                    # first pass over groups to determine sensorpos size
+        numchanswithpos = 0
+        for i in range(3,len(ix),4):                                    # first pass over groups to determine sensorpos and maxpersensor sizes
             text = contents[ix[i - 1] : ix[i]]
-            text = text[text.find('\n', 1):].splitlines()
-            pospersensor = len(text[1].split())
+            text = text[text.find('\n', 1):].splitlines()[1:]
+            numchanswithpos += len(text)
+            pospersensor = len(text[0].split())
             maxpersensor = max (pospersensor, maxpersensor)
             grouppospersensor.append(pospersensor)
 
-        assert(maxpersensor == 3 or maxpersensor == 6)                    # 3 is one position per sensor (EEG or MEG) 
-        positions = np.zeros([nChannels, maxpersensor])                   # 6 is two positions per sensor (MEG) 
+        if ((maxpersensor == 3 or maxpersensor == 6) and                # 3 is (x,y,z) per sensor (EEG,MEG), 6 is (x,y,z,x1,y1,z1) per sensor (MEG)
+            numchanswithpos > 0 and numchanswithpos <= nChannels):                  
+            
+            positions = np.zeros((numchanswithpos, maxpersensor))     
+            
+            for group, i in enumerate(range(3,len(ix),4)):              # loop over channel groups
+                text = contents[ix[i - 1] : ix[i]]
+                text = text[text.find('\n', 1):].split()
+                last = nChannels - nc
+                pospersensor = grouppospersensor[group]
+                numchannels = min(last, int(len(text) / pospersensor))
+                for j in range(0, numchannels * pospersensor, pospersensor):
+                    positions[nc][:pospersensor] = np.array(text[j : j + pospersensor])
+                    nc += 1
 
-        for group, i in enumerate(range(3,len(ix),4)):                    # loop over channel groups
-            text = contents[ix[i - 1] : ix[i]]
-            text = text[text.find('\n', 1):].split()
-            last = nChannels - nc
-            pospersensor = grouppospersensor[group]
-            numchannels = min(last, int(len(text) / pospersensor))
-            for j in range(numchannels):
-                for k in range(pospersensor):
-                    positions[nc][k] = float(text[j * pospersensor + k])
-                nc += 1
-
-        sensorpos = positions
-        log.info('Found sensor positions')
+            sensorpos = positions
+            log.info('Found sensor positions')
+        else:
+            log.warning('Reading sensor positions failed (dimensions inconsistency)')
     else:
         log.warning('No sensor positions were found')
     
-    
     #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    # search for Epoch Labels
+    # search for epoch labels
     epochlabelslist = []
 
     if extension == 'dat':
@@ -318,7 +346,7 @@ def read(inputfilename='', plotdata = 1, verbosity = 2):
         log.info('Found epoch labels')
     
     #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    # search for Epoch Information
+    # search for epoch information
     tixstart = contents.find('EPOCH_INFORMATION START_LIST')
     tixstart = contents.find('\n',tixstart)
     tixstop = contents.find('EPOCH_INFORMATION END_LIST')
@@ -422,10 +450,11 @@ def read(inputfilename='', plotdata = 1, verbosity = 2):
     data = []
 
     try:
+        itemstoread = nSamples * nTrials * nChannels
         if nASCII == 1:
-            data = np.fromfile(filepath, dtype=np.float32, count = -1, sep = ' ').reshape(nSamples * nTrials, nChannels)
+            data = np.fromfile(filepath, dtype=np.float32, count = itemstoread, sep = ' ').reshape(nSamples * nTrials, nChannels)
         else:
-            data = np.fromfile(filepath, dtype=np.float32).reshape(nSamples * nTrials, nChannels)
+            data = np.fromfile(filepath, dtype=np.float32, count = itemstoread,).reshape(nSamples * nTrials, nChannels)
     except FileNotFoundError:
         raise FileNotFoundError("Data file not found")
     except:
@@ -464,15 +493,35 @@ def read(inputfilename='', plotdata = 1, verbosity = 2):
             log.warning("Invalid plotdata input: please see description in help")
        
     # assamble output dict
-    output = {'data'        : data, 
-              'info'        : datainfo, 
-              'labels'      : labels,
-              'sensorpos'   : sensorpos, 
-              'events'      : events,
-              'annotations' : annotations,
-              'epochinfo'   : epochinformation,
-              'epochlabels' : epochlabelslist,
-              'impedances'  : impedancematrix, 
-              'hpimatrix'   : hpimatrix}
+    output = {'data'            : data, 
+              'info'            : datainfo, 
+              'labels'          : labels,
+              'sensorpos'       : sensorpos, 
+              'events'          : events,
+              'annotations'     : annotations,
+              'epochinfo'       : epochinformation,
+              'epochlabels'     : epochlabelslist,
+              'impedances'      : impedancematrix,
+              'landmarks'       : landmarks,
+              'landmarkslabels' : landmarkslabels,
+              'hpimatrix'       : hpimatrix}
 
     return output
+
+
+def findtokens(token, contents):
+    """findtoken
+       Returns indices of token occurrences in input string contents.
+    """
+    if not token or not contents:
+        raise Exception("Invalid input for finding token")
+
+    tokenindices = []
+    index   = 0
+    while index < len(contents):
+            index = contents.find(token, index)
+            if index == -1:
+                break
+            tokenindices.append(index)
+            index += len(token)
+    return tokenindices

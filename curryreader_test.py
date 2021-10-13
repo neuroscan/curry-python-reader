@@ -74,7 +74,7 @@ def test_ascii_dat():
     
 
 # Tests raw-float-cdt format with continuos data, data-info, labels, 
-# events, annotations, sensor locations and HPI matrix
+# events, annotations, sensor locations, landmarks and HPI matrix
 def test_hpi():
     
     currydata = cr.read(hpi_cdt, plot)   

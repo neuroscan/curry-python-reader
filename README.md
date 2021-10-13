@@ -21,13 +21,13 @@ pip install -r requirements.txt --user
                         plotdata = x, with x > 1, shows and automatically closes plot after x seconds
     verbosity:          1 is low, 2 is medium (default) and 3 is high
 
-# Output as dictionary with keys:
+# Output As Dictionary With Keys
     'data'              functional data matrix (e.g. EEG, MEG) with dimensions (samples, channels)
     'datainfo'          data information with keys: {'samples', 'channels', 'trials/epochs', 'sampling', 'frequency'}
     'labels'            channel labels
     'sensorpos'         channel locations [x,y,z]
     'events'            events matrix where every row corresponds to: [event latency, event type, event start, event stop]
-    'annontations'      corresponding annotations to each event
+    'annotations'       corresponding annotations to each event
     'epochinfo'         epochs matrix where every row corresponds to: [number of averages, total epochs, type, accept, correct, response, response time]
     'epochlabels'       epoch labels
     'impedancematrix'   impedance matrix with max size (channels, 10), corresponding to last ten impedance measurements
