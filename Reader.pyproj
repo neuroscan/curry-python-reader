@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>f53299d0-bd1a-45de-98e4-046b4f75a381</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>create_ref_results.py</StartupFile>
+    <StartupFile>example.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -12,7 +12,7 @@
     <Name>Reader</Name>
     <RootNamespace>Reader</RootNamespace>
     <IsWindowsApplication>False</IsWindowsApplication>
-    <InterpreterId>Global|PythonCore|3.7</InterpreterId>
+    <InterpreterId>Global|PythonCore|3.9</InterpreterId>
     <TestFramework>pytest</TestFramework>
     <UnitTestPattern>test*.py</UnitTestPattern>
     <UnitTestRootDirectory>.</UnitTestRootDirectory>
@@ -37,7 +37,7 @@
     <Compile Include="setup.py" />
   </ItemGroup>
   <ItemGroup>
-    <InterpreterReference Include="Global|PythonCore|3.7" />
+    <InterpreterReference Include="Global|PythonCore|3.9" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in

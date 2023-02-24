@@ -199,7 +199,7 @@ def read(inputfilename='', plotdata = 1, verbosity = 2):
                impedancelist.append(float(imp))
     
         # Curry records last 10 impedances
-        impedancematrix = np.asarray(impedancelist, dtype = np.float).reshape(int(len(impedancelist) / nChannels), nChannels)
+        impedancematrix = np.asarray(impedancelist, dtype = float).reshape(int(len(impedancelist) / nChannels), nChannels)
     
     if impedancematrix.any():
         log.info('Found impedance matrix')
