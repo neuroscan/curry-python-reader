@@ -6,7 +6,7 @@ setuptools.setup(
     mantainer="Fernando Gasca",
     mantainer_email="fgasca@neuroscan.com",
     description="Python reader for CURRY MEG/EEG files",
-    long_description=open('README.txt').read(),
+    long_description=open('README.md').read(),
     long_description_content_type="text/markdown",
     url = "https://compumedicsneuroscan.com/products/by-name/curry/",
     download_url="https://github.com/neuroscan/curry-python-reader",
