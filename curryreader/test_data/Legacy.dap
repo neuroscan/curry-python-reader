@@ -1,0 +1,157 @@
+﻿DATA_PARAMETERS START
+   DataFormat           = FLOAT
+   DataGuid             = {0B86B22B-1A49-411A-9657-4A4BDA3D3ED8}
+   DataExtension        = dat
+   CurrentSessionLabel  = 
+   DataByteOrder        = INTEL
+   DataSampOrder        = SAMP
+   AmplifierInfo        = 
+   Comments             = 
+   FileHistory          = 1 file:¶	D:\Hamburg\CurryWin\Python\Reader\LoadCurryData\test-data\Temp Legacy Epoched.cdt  502 kB 251 samples 1/14/2021 12:44:44 PM¶¶1 EEG group,1 other group, 32 channels¶251 samples per epoch, 4016 samples overall, 250.0 Hz sampling rate¶duration per epoch: 1.0 s, overall duration: 16.1 s, start latency / trigger offset: -500.0 ms¶¶16 events, 2 event types¶¶EEG group 1: 31 channels, reference: <None>¶¶number of epochs: 16, number selected epochs: 16¶
+   NumSessions          =  1
+   CurrentSession       =  0
+   FrequencyDomain      =  0
+   NumSamples           =  251
+   NumTrials            =  16
+   NumChannels          =  32
+   NumGroups            =  2
+   NumMagGroups         =  0
+   NumElGroups          =  1
+   IntOffset            =  0
+   NumLinesSkip         =  0
+   NumColumnsSkip       =  0
+   DecimalSymbol        =  0
+   DigLengthUnit        = -1
+   DigColX              =  1
+   DigColY              =  2
+   DigColZ              =  3
+   DigColLabel          =  4
+   DigDirX              = -1
+   DigDirY              = -1
+   DigDirZ              = -1
+   StartYear            =  0
+   StartMonth           =  0
+   StartDay             =  0
+   StartHour            = -1
+   StartMin             =  0
+   StartSec             =  0
+   StartMillisec        =  0
+   StartOffsetUTCMin    =  0
+   SampleTimeUsec       =  4000
+   SampleFreqHz         =  250
+   TriggerOffsetUsec    = -500000
+   TriggerOffsetHz      =  0
+   StimIntervalUsec     =  2008000
+DATA_PARAMETERS END
+
+DEVICE_PARAMETERS START
+   DataUnit             = uV
+   NumChanThisGroup     =  31
+   NumSensorsThisGroup  =  31
+   CommonOffset         =  0
+   NumRefChannels       =  0
+   CommonScale          =  1
+DEVICE_PARAMETERS END
+
+DEVICE_PARAMETERS_OTHERS START
+   DataUnit             = uV
+   NumChanThisGroup     =  1
+   NumSensorsThisGroup  =  1
+   CommonOffset         =  0
+   NumRefChannels       =  0
+   CommonScale          =  1
+DEVICE_PARAMETERS_OTHERS END
+
+TRIGGER_FLAGS_OTHERS START
+   ListDescription      = Trigger
+   ListUnits            = 
+   ListNrColumns        =  1
+   ListNrRows           =  1
+   ListNrTimepts        =  1
+   ListNrBlocks         =  1
+   ListBinary           =  0
+   ListType             =  0
+   ListTrafoType        =  0
+   ListGridType         =  2
+   ListFirstColumn      =  1
+   ListIndexMin         = -1
+   ListIndexMax         = -1
+   ListIndexAbsMax      = -1
+TRIGGER_FLAGS_OTHERS END
+
+TRIGGER_FLAGS_OTHERS START_LIST	# Do not edit!
+  0
+TRIGGER_FLAGS_OTHERS END_LIST
+
+EPOCH_INFORMATION START
+   ListDescription      = trial info
+   ListUnits            = 
+   ListNrColumns        =  7
+   ListNrRows           =  16
+   ListNrTimepts        =  1
+   ListNrBlocks         =  1
+   ListBinary           =  0
+   ListType             =  0
+   ListTrafoType        =  0
+   ListGridType         =  2
+   ListFirstColumn      =  1
+   ListIndexMin         = -1
+   ListIndexMax         = -1
+   ListIndexAbsMax      = -1
+EPOCH_INFORMATION END
+
+EPOCH_INFORMATION START_LIST	# Do not edit!
+  1	 16	 2	 0	 0	 0	 0
+  1	 16	 1	 0	 0	 0	 0
+  1	 16	 2	 0	 0	 0	 0
+  1	 16	 1	 0	 0	 0	 0
+  1	 16	 2	 0	 0	 0	 0
+  1	 16	 2	 0	 0	 0	 0
+  1	 16	 2	 0	 0	 0	 0
+  1	 16	 1	 0	 0	 0	 0
+  1	 16	 2	 0	 0	 0	 0
+  1	 16	 1	 0	 0	 0	 0
+  1	 16	 1	 0	 0	 0	 0
+  1	 16	 2	 0	 0	 0	 0
+  1	 16	 2	 0	 0	 0	 0
+  1	 16	 1	 0	 0	 0	 0
+  1	 16	 2	 0	 0	 0	 0
+  1	 16	 2	 0	 0	 0	 0
+EPOCH_INFORMATION END_LIST
+
+EPOCH_LABELS START
+   ListDescription      = trial label
+   ListUnits            = 
+   ListNrColumns        =  80
+   ListNrRows           =  16
+   ListNrTimepts        =  1
+   ListNrBlocks         =  1
+   ListBinary           =  0
+   ListType             =  5
+   ListTrafoType        =  0
+   ListGridType         =  2
+   ListFirstColumn      =  1
+   ListIndexMin         = -1
+   ListIndexMax         = -1
+   ListIndexAbsMax      = -1
+EPOCH_LABELS END
+
+EPOCH_LABELS START_LIST	# Do not edit!
+2
+1
+2
+1
+2
+2
+2
+1
+2
+1
+1
+2
+2
+1
+2
+2
+EPOCH_LABELS END_LIST
+
