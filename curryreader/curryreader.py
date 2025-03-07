@@ -74,7 +74,7 @@ def read(inputfilename='', plotdata = 1, verbosity = 2):
     filename = os.path.basename(filepath)
 
     try:
-        basename, extension = filepath.split(".", maxsplit=1)
+        basename, extension = filepath.rsplit(".", maxsplit=1)
     except:
         raise Exception("Unsupported file, choose a cdt or dat file")
 
