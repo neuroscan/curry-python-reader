@@ -74,7 +74,7 @@ def read(inputfilename='', plotdata = 1, verbosity = 2):
     filename = os.path.basename(filepath)
 
     try:
-        basename, extension = filepath.split(".", maxsplit=1)
+        basename, extension = ".".join(filepath.split(".")[:-1]), filepath.split(".")[-1]  # BUG (cannot handle dots in paths) FIXED
     except:
         raise Exception("Unsupported file, choose a cdt or dat file")
 
@@ -156,7 +156,7 @@ def read(inputfilename='', plotdata = 1, verbosity = 2):
            text = contents[ixstart:ixstop].strip()
            if text == 'ASCII' or text == 'CHAN' :   # test for alphanumeric values
                a[i] = 1
-           elif text.isnumeric() :
+           elif text.replace('.','',1).isnumeric() :  # BUG (float not recognized) FIXED
                a[i] = float(text)                   # assign if it was a number
     
     # derived variables.  numbers (1) (2) etc are the token numbers
@@ -168,12 +168,12 @@ def read(inputfilename='', plotdata = 1, verbosity = 2):
     nASCII      = int(a[5]  + a[int(5 + nt / 2)])
     nMultiplex  = int(a[6]  + a[int(6 + nt / 2)])
     fSampleTime =     a[7]  + a[int(7 + nt / 2)]
-
+                    
+    if fFrequency == 0. or fSampleTime != 0.:  # BUG (order) FIXED
+        fFrequency = 1000000 / fSampleTime
+    
     datainfo = { "samples" : nSamples, "channels" : nChannels, "trials" : nTrials, "samplingfreq" : fFrequency }
     log.info('Number of samples = %s, number of channels = %s, number of trials/epochs = %s, sampling frequency = %s Hz', str(nSamples), str( nChannels), str(nTrials), str(fFrequency))
-                    
-    if fFrequency == 0 or fSampleTime != 0:
-        fFrequency = 1000000 / fSampleTime
     
     # try to guess number of samples based on datafile size
     if nSamples < 0:
@@ -415,7 +415,7 @@ def read(inputfilename='', plotdata = 1, verbosity = 2):
         tixstop = contents.find('REMARK_LIST END_LIST')
         
         if tixstart != -1 and tixstop != 1 :
-            annotations = contents[tixstart:tixstop - 1].splitlines()
+            annotations = contents[tixstart+1:tixstop].splitlines()  # BUG (does not read correct lines) FIXED
 
         log.info('Found events')
 
