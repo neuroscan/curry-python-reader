@@ -195,11 +195,11 @@ def read(inputfilename = '', plotdata = 1, verbosity = 2):
     if tixstart != -1 and tixstop != 1 :
         text = contents[tixstart:tixstop - 1].split()
         for imp in text:
-           if int(imp) != -1:                   # skip?
-               impedancelist.append(float(imp))
+            impedancelist.append(float(imp) if imp!="-1" else np.nan)
     
         # Curry records last 10 impedances
         impedancematrix = np.asarray(impedancelist, dtype = float).reshape(int(len(impedancelist) / nChannels), nChannels)
+        impedancematrix = impedancematrix[~np.isnan(impedancematrix).all(axis=1)]
     
     if impedancematrix.any():
         log.info('Found impedance matrix')
