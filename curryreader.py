@@ -6,7 +6,7 @@ import tkinter as tk
 from tkinter import filedialog
 import matplotlib.pyplot as plt
 
-def read(inputfilename='', plotdata = 1, verbosity = 2):
+def read(inputfilename = '', plotdata = 1, verbosity = 2):
     """Curry Reader Help
 
     Usage:
@@ -479,9 +479,9 @@ def read(inputfilename='', plotdata = 1, verbosity = 2):
         # stacked plot
         amprange = max(abs(data.min()), abs(data.max()))
         shift = np.linspace((nChannels - 1) * amprange * 0.3, 0, nChannels,  dtype=np.float32)
-        data += np.tile(shift, (nSamples * nTrials, 1))
+        shiftmat = np.tile(shift, (nSamples * nTrials, 1))
         fig, ax = plt.subplots()
-        ax.plot(time, data)
+        ax.plot(time, data + shiftmat)
         ax.set_yticks(shift)
         ax.set_yticklabels(labels)
         ax.set_xlabel('Time [ms]')
