@@ -115,7 +115,7 @@ def test_file_extension():
     with pytest.raises(Exception, match='Unsupported file, choose a cdt or dat file'):
         cr.read("file")
 
-    with pytest.raises(Exception, match='Unsupported extension, choose a cdt or dat file'):
+    with pytest.raises(Exception, match='Unsupported file, choose a cdt or dat file'):
         cr.read("file.xy")
 
 # Test missing parameters

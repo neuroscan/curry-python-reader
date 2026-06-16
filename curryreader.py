@@ -34,7 +34,7 @@ def read(inputfilename = '', plotdata = 1, verbosity = 2):
     'landmarkslabels'   labels for functional (e.g. LPA, Nasion,...), HPI (e.g. HPI 1, HPI 2,...) or headshape (e.g. H1, H2,...) landmarks 
     'hpimatrix'         HPI-coil measurements matrix (Orion-MEG only) where every row is: [measurementsample, dipolefitflag, x, y, z, deviation] 
 
-    2021 - Compumedics Neuroscan
+    2026 - Compumedics Neuroscan
     """
     # configure verbosity logging    
     verbositylevel = lambda verbosity : log.WARNING if verbosity == 1 else (log.INFO if verbosity == 2 else (log.DEBUG if verbosity == 3 else log.INFO))
@@ -69,14 +69,13 @@ def read(inputfilename = '', plotdata = 1, verbosity = 2):
             raise Exception("Unable to open file")
     else:
         filepath = inputfilename
-    
-    pathname = os.path.dirname(filepath)
-    filename = os.path.basename(filepath)
 
-    try:
-        basename, extension = ".".join(filepath.split(".")[:-1]), filepath.split(".")[-1]  # BUG (cannot handle dots in paths) FIXED
-    except:
+    basepath, ext = os.path.splitext(filepath)
+    
+    if ext not in ['.cdt', '.dat']:
         raise Exception("Unsupported file, choose a cdt or dat file")
+
+    extension = ext[1:] # remove dot from extension
 
     parameterfile = ''
     parameterfile2 = ''
@@ -87,23 +86,22 @@ def read(inputfilename = '', plotdata = 1, verbosity = 2):
     hpifile = ''
 
     if extension == 'dat':
-        parameterfile = basename + '.dap'
-        labelfile = basename + '.rs3'
-        eventfile = basename + '.cef'
-        eventfile2 = basename + '.ceo'
+        parameterfile = basepath + '.dap'
+        labelfile = basepath + '.rs3'
+        eventfile = basepath + '.cef'
+        eventfile2 = basepath + '.ceo'
     elif extension == 'cdt' :
         parameterfile = filepath + '.dpa'
         parameterfile2 = filepath + '.dpo'
         eventfile = filepath + '.cef'
         eventfile2 = filepath + '.ceo'
         hpifile = filepath + '.hpi'
-    else:
-        raise Exception("Unsupported extension, choose a cdt or dat file")
        
+    filename = os.path.basename(filepath)
     log.info('Reading file %s ...', filename)
 
     # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    # open parameter file
+    # open parameter file, obtain basic data info
     
     contents = []
     
@@ -144,7 +142,7 @@ def read(inputfilename = '', plotdata = 1, verbosity = 2):
     tok = ['NumSamples', 'NumChannels', 'NumTrials', 'SampleFreqHz',  'TriggerOffsetUsec',  'DataFormat', 'DataSampOrder',   'SampleTimeUsec',
             'NUM_SAMPLES','NUM_CHANNELS','NUM_TRIALS','SAMPLE_FREQ_HZ','TRIGGER_OFFSET_USEC','DATA_FORMAT','DATA_SAMP_ORDER', 'SAMPLE_TIME_USEC']
     
-    # scan keywords - all keywords must exist!
+    # scan keywords
     nt = len(tok)
     a = [0] * nt                                    # initialize
     for i in range(nt):
@@ -154,11 +152,14 @@ def read(inputfilename = '', plotdata = 1, verbosity = 2):
        ixstop = contents.find('\n',ix)
        if ix != -1 :
            text = contents[ixstart:ixstop].strip()
-           if text == 'ASCII' or text == 'CHAN' :   # test for alphanumeric values
+           if text in ('ASCII', 'CHAN'):
                a[i] = 1
-           elif text.replace('.','',1).isnumeric() :  # BUG (float not recognized) FIXED
-               a[i] = float(text)                   # assign if it was a number
-    
+           else:
+               try:
+                   a[i] = float(text)  # assign if it was a number
+               except ValueError:
+                   pass
+
     # derived variables.  numbers (1) (2) etc are the token numbers
     nSamples    = int(a[0]  + a[int(0 + nt / 2)])
     nChannels   = int(a[1]  + a[int(1 + nt / 2)])
@@ -168,14 +169,12 @@ def read(inputfilename = '', plotdata = 1, verbosity = 2):
     nASCII      = int(a[5]  + a[int(5 + nt / 2)])
     nMultiplex  = int(a[6]  + a[int(6 + nt / 2)])
     fSampleTime =     a[7]  + a[int(7 + nt / 2)]
-                    
-    if fFrequency == 0. or fSampleTime != 0.:  # BUG (order) FIXED
+    
+    # if sampling frequency is missing, derive it from sample time
+    if fFrequency == 0 and fSampleTime != 0:
         fFrequency = 1000000 / fSampleTime
-    
-    datainfo = { "samples" : nSamples, "channels" : nChannels, "trials" : nTrials, "samplingfreq" : fFrequency }
-    log.info('Number of samples = %s, number of channels = %s, number of trials/epochs = %s, sampling frequency = %s Hz', str(nSamples), str( nChannels), str(nTrials), str(fFrequency))
-    
-    # try to guess number of samples based on datafile size
+                       
+    # try to guess number of samples based on data file size
     if nSamples < 0:
         if nASCII == 1:
             raise Exception("Number of samples cannot be guessed from ASCII data file. Use Curry to convert this file to Raw Float format")
@@ -183,6 +182,9 @@ def read(inputfilename = '', plotdata = 1, verbosity = 2):
             log.warning('Number of samples not present in parameter file. It will be estimated from size of data file')
             fileSize = os.path.getsize(filepath)
             nSamples = fileSize / (4 * nChannels * nTrials)
+    
+    datainfo = { "samples" : nSamples, "channels" : nChannels, "trials" : nTrials, "samplingfreq" : fFrequency }
+    log.info('Number of samples = %s, number of channels = %s, number of trials/epochs = %s, sampling frequency = %s Hz', str(nSamples), str( nChannels), str(nTrials), str(fFrequency))
     
     #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
     # search for Impedance Values
@@ -415,7 +417,7 @@ def read(inputfilename = '', plotdata = 1, verbosity = 2):
         tixstop = contents.find('REMARK_LIST END_LIST')
         
         if tixstart != -1 and tixstop != 1 :
-            annotations = contents[tixstart+1:tixstop].splitlines()  # BUG (does not read correct lines) FIXED
+            annotations = contents[tixstart+1:tixstop].splitlines()
 
         log.info('Found events')
 
