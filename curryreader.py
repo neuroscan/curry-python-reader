@@ -32,7 +32,8 @@ def read(inputfilename = '', plotdata = 1, verbosity = 2):
     'impedancematrix'   impedance matrix with max size (channels, 10), corresponding to last ten impedance measurements
     'landmarks'         functional, HPI or headshape landmarks locations
     'landmarkslabels'   labels for functional (e.g. LPA, Nasion,...), HPI (e.g. HPI 1, HPI 2,...) or headshape (e.g. H1, H2,...) landmarks 
-    'hpimatrix'         HPI-coil measurements matrix (Orion-MEG only) where every row is: [measurementsample, dipolefitflag, x, y, z, deviation] 
+    'hpimatrix'         HPI-coil measurements matrix (Orion-MEG only) where every row is (with n number of HPI coils): 
+                        [measurementsample, dipolefitflag_1, x_1, y_1, z_1, deviation_1, ..., dipolefitflag_n, x_n, y_n, z_n, deviation_n] 
 
     2026 - Compumedics Neuroscan
     """
